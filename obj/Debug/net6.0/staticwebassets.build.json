@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "M9p8p4sye9MW5b6ZlhQSyqhWHdNIjepBDWJ8Uudw7Q4=",
+  "Source": "EventHub",
+  "BasePath": "_content/EventHub",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
