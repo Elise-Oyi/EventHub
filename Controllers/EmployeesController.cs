@@ -91,9 +91,9 @@ namespace EventHub.Controllers
             var employeeModel = _mapper.Map<Employee>(employee);
             _employeeRepository.Insert(employeeModel);
 
-            var result = _employeeRepository.SaveChanges();
+            var result = await _employeeRepository.Insert(employeeModel);
 
-            if (result > 0)
+            if (result != null)
             {
                 /*
                  * first parameter is actionName - the name of the action to use for generating the uri
@@ -113,14 +113,14 @@ namespace EventHub.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest | StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Employee,Hr")]
-        public ActionResult Update(Employee employee)
+        public async Task<ActionResult> Update(UpdateEmployeeDto employee)
         {
             //var employeeId = _employeeRepository.GetDetails(employee.EmployeeId);
             //if(employeeId == null) return NotFound();
 
-            _employeeRepository.Update(employee);
-            var result = _employeeRepository.SaveChanges();
-            if(result > 0)
+            var employeeModel = _mapper.Map<Employee>(employee);
+            var result = await _employeeRepository.Update(employeeModel);
+            if (result != null)
             {
                 return NoContent();
             }
@@ -132,18 +132,17 @@ namespace EventHub.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         //[Authorize(Roles = "Hr")]
-        public ActionResult Delete (int id)
+        public async Task<ActionResult> Delete (int id)
         {
-            var employee = _employeeRepository.GetDetails(id);
-            if(employee == null)
+            var employee = await _employeeRepository.GetDetails(id);
+
+            if (employee == null)
             {
                 return NotFound();
             }
             else
             {
-                _employeeRepository.Delete(employee);
-                _employeeRepository.SaveChanges();
-
+                await _employeeRepository.Delete(employee.EmployeeId);
                 return NoContent();
             }
         }
