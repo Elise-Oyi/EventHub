@@ -3,12 +3,14 @@ using EventHub.Dal;
 using EventHub.DTO;
 using EventHub.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventHub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("PublicPolicy")]
     public class EmployeesController : ControllerBase
     {
 
@@ -55,12 +57,12 @@ namespace EventHub.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         //[Authorize(Roles = "Employee,Hr")]
-        public ActionResult<IEnumerable<EmployeeDto>> Get()
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get()
         {
             var employees = _employeeRepository.GetAll();
 
             //return employees == null ? NotFound() : Ok(employees);
-            if(employees.Count <= 0 )
+            if (employees == null)
             {
                 return NotFound();
             }
@@ -84,10 +86,11 @@ namespace EventHub.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         //[Authorize(Roles = "Employee,Hr")]
-        public ActionResult Create(NewEmployeeDto employee)
+        public async Task<ActionResult> Create(NewEmployeeDto employee)
         {
             var employeeModel = _mapper.Map<Employee>(employee);
             _employeeRepository.Insert(employeeModel);
+
             var result = _employeeRepository.SaveChanges();
 
             if (result > 0)
@@ -147,3 +150,4 @@ namespace EventHub.Controllers
     }
 }
 
+//eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoibWljaGVsbGVzY290QHRlc3QuY29tIiwicm9sZSI6IkVtcGxveWVlIiwibmJmIjoxNjg5OTQwMTU5LCJleHAiOjE2OTA1NDQ5NTksImlhdCI6MTY4OTk0MDE1OX0.uZAuawM93NcGSEWBwcvskw91Bv26AirswPK96lKIOrY5yQAIbH2mwEJRaWrcmxYF - m3usajXODvrfNhA6YeV5w

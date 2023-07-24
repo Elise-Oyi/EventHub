@@ -26,6 +26,16 @@ builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepositor
 builder.Services.AddScoped<ITokenManager, TokenManager>();
 //--adding automapper service
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+//--adding CORS as a service
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PublicPolicy", policy =>
+    {
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();    
+        policy.AllowAnyOrigin();
+    });
+});
 
 //--adding authentication middleware
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -78,6 +88,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//--CORS middleware
+app.UseCors();
 
 app.UseHttpsRedirection();
 

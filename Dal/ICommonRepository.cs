@@ -10,21 +10,21 @@
           */
 
         //--Lists all Items
-        List<T> GetAll();
+        Task<List<T>> GetAll();
 
         //--Get 1 item using item Id
-        T GetDetails(int id);
+        Task<T> GetDetails(int id);
 
         //--Insert an item 
-        void Insert (T item);
+        Task<T> Insert (T item);
 
         //--Update an item
-        void Update (T item);
+        Task<T> Update (T item);
 
         //--Delete an item
-        void Delete (T item);
+        Task<T> Delete (int id);
 
-        //--Save changes
-        int SaveChanges();
+        ////--Save changes
+        //int SaveChanges();
     }
 }

@@ -19,41 +19,53 @@ namespace EventHub.Dal
         }
 
         //--get all items
-        public List<T> GetAll()
+        public async Task<List<T>> GetAll()
         {
-            return table.ToList();
+            return await _dbContext.Set<T>().ToListAsync();
         }
 
         //--get 1 item by item id
-        public T GetDetails(int id)
+        public async Task<T>  GetDetails(int id)
         {
-            return table.Find(id);
+            return await _dbContext.Set<T>().FindAsync(id);
         }
 
         //--insert item
-        public void Insert(T item)
+        public async Task<T> Insert(T item)
         {
-           table.Add(item);
+            _dbContext.Set<T>().Add(item);
+            await _dbContext.SaveChangesAsync();
+            return item;
         }
 
         //--update item
-        public void Update(T item)
+        public async Task<T> Update(T item)
         {
-            table.Attach(item);
             _dbContext.Entry(item).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+            return item;
         }
 
         //--delete item
-        public void Delete(T item)
+        public async Task<T> Delete(int id)
         {
-            table.Remove(item);
+            var item = await _dbContext.Set<T>().FindAsync(id);
+
+            if (item == null)
+            {
+                return item;
+            }
+
+            _dbContext.Set<T>().Remove(item);
+            await _dbContext.SaveChangesAsync();
+            return item;
         }
 
-        //--save changes
-        public int SaveChanges()
-        {
-            return _dbContext.SaveChanges();
-        }
+        ////--save changes
+        //public int SaveChanges()
+        //{
+        //    return _dbContext.SaveChanges();
+        //}
         
     }
 }
